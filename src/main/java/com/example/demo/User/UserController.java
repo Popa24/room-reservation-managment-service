@@ -36,7 +36,7 @@ public class UserController {
         userDomain user= userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
      return modelAssembler.toModel(user);
     }
-    @PutMapping("/user/{id}")
+    @PutMapping("user/{id}")
     ResponseEntity<?> replaceEmployee(@RequestBody userDomain newUser, @PathVariable Long id) {
 
         userDomain updatedUser = userRepository.findById(id) //

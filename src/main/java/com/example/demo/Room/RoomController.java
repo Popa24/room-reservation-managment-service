@@ -37,7 +37,7 @@ public class RoomController {
                 .orElseThrow(() -> new RoomNotFoundException(id));
         return roomModelAssembler.toModel(room);
     }
-    @PutMapping("user/{id}")
+    @PutMapping("room/{id}")
     ResponseEntity<?>replaceRoom(@RequestBody Room newRoom, @PathVariable Long id){
         Room updateRoom=roomRepository.findById(id)
                 .map( room -> {

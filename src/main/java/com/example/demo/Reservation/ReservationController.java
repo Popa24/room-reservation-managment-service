@@ -41,7 +41,7 @@ public class ReservationController {
         return reservationModelAssembler.toModel(reservation);
     }
     @PutMapping("reservation/{id}")
-    ResponseEntity<?>replaceRoom(@RequestBody Reservation newReservation, @PathVariable Long id){
+    ResponseEntity<?>replaceReservation(@RequestBody Reservation newReservation, @PathVariable Long id){
         Reservation updateReservation=reservationRepository.findById(id)
                 .map( reservation -> {
                     reservation.setStartDate(newReservation.getStartDate());
