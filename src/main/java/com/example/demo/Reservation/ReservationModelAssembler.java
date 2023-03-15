@@ -1,8 +1,6 @@
 package com.example.demo.Reservation;
 
 
-import com.example.demo.Room.Room;
-import com.example.demo.Room.RoomController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

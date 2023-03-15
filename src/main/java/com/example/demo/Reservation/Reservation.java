@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "resevation")
+@Table(name = "reservation")
 public class Reservation {
     private @Id @GeneratedValue Long id;
     private int userId;

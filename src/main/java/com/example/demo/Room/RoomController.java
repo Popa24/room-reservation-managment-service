@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
+@RestController
 public class RoomController {
     private final RoomRepository roomRepository;
     private final RoomModelAssembler roomModelAssembler;
