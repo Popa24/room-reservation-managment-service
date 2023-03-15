@@ -1,9 +1,8 @@
 package com.example.demo.Reservation;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.demo.Room.Room;
+import com.example.demo.User.userDomain;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -11,8 +10,13 @@ import java.util.Date;
 @Table(name = "reservation")
 public class Reservation {
     private @Id @GeneratedValue Long id;
-    private int userId;
-    private int roomId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @PrimaryKeyJoinColumn
+    private userDomain userId;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @PrimaryKeyJoinColumn
+    private Room roomId;
     private Date startDate;
     private Date endDate;
 
@@ -23,11 +27,11 @@ public class Reservation {
         this.id = id;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(userDomain userId) {
         this.userId = userId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(Room roomId) {
         this.roomId = roomId;
     }
 
@@ -43,11 +47,11 @@ public class Reservation {
         return id;
     }
 
-    public int getUserId() {
+    public userDomain getUserId() {
         return userId;
     }
 
-    public int getRoomId() {
+    public Room getRoomId() {
         return roomId;
     }
 
@@ -59,7 +63,7 @@ public class Reservation {
         return endDate;
     }
 
-    public Reservation(Long id, int userId, int roomId, Date startDate, Date endDate) {
+    public Reservation(Long id, userDomain userId, Room roomId, Date startDate, Date endDate) {
         this.id = id;
         this.userId = userId;
         this.roomId = roomId;
