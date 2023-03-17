@@ -15,12 +15,9 @@ public class ReservationModelAssembler implements RepresentationModelAssembler<R
 
         // Unconditional links to single-item resource and aggregate root
 
-        EntityModel<Reservation> reservationModel = EntityModel.of(reservation,
+
+        return EntityModel.of(reservation,
                 linkTo(methodOn(ReservationController.class).one(reservation.getId())).withSelfRel(),
                 linkTo(methodOn(ReservationController.class).all()).withRel("reservation"));
-
-
-
-        return reservationModel;
     }
 }

@@ -14,12 +14,9 @@ class RoomModelAssembler implements RepresentationModelAssembler<Room, EntityMod
 
         // Unconditional links to single-item resource and aggregate root
 
-        EntityModel<Room> roomModel = EntityModel.of(room,
+
+        return EntityModel.of(room,
                 linkTo(methodOn(RoomController.class).one(room.getId())).withSelfRel(),
                 linkTo(methodOn(RoomController.class).all()).withRel("room"));
-
-
-
-        return roomModel;
     }
 }
