@@ -25,6 +25,6 @@ public class userDomain {
 
 
     public userDomain() {
-        
+
     }
 }

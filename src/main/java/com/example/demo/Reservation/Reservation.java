@@ -21,10 +21,11 @@ public class Reservation {
     @ManyToOne(cascade = CascadeType.MERGE)
     @PrimaryKeyJoinColumn
     private Room roomId;
-
     private Date startDate;
     private Date endDate;
 
     public Reservation() {
+    }
 
-}}
+
+}

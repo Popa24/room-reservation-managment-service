@@ -21,6 +21,7 @@ public class Room {
         private int price;
 
     public Room() {
-
     }
+
+
 }
