@@ -1,30 +1,26 @@
-package com.example.demo.User;
+package com.example.demo.user.repository;
+
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
+
 @Entity
+@Table(name = "AppUser")
 @Data
-@AllArgsConstructor
-@Table
-public class userDomain {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private long id;
-
+    @Column(name = "name")
     private String name;
-
+    @Column(name = "surname")
     private String surname;
-
+    @Column(name = "email")
     private String email;
-
+    @Column(name = "password")
     private String password;
-
+    @Column(name = "roles")
     private String roles;
-
-
-    public userDomain() {
-
-    }
 }
