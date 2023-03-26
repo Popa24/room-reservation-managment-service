@@ -33,6 +33,46 @@ public class UserRepository {
         return fromEntity(entity);
     }
 
+
+    public @NonNull UserDomainObject update(@NonNull UserDomainObject user) {
+        final EntityManager em = entityManager
+                .getEntityManagerFactory()
+                .createEntityManager();
+        UserEntity entity = em.find(UserEntity.class, user.getId());
+
+        entity.setName(user.getName());
+        entity.setSurname(user.getSurname());
+        entity.setEmail(user.getEmail());
+        entity.setRoles(user.getRoles());
+
+        em
+                .getTransaction()
+                .begin();
+
+
+        em.persist(entity);
+        em.getTransaction().commit();
+        return fromEntity(entity);
+    }
+
+
+    @NonNull
+    public UserDomainObject getById(Integer userId) {
+        UserDomainObject user = entityManager.find(UserDomainObject.class, userId);
+        entityManager
+                .detach(user);
+        return user;
+    }
+
+    public void delete(@NonNull final Integer userId) {
+        UserDomainObject user = entityManager.find(UserDomainObject.class, userId);
+        entityManager
+                .remove(user);
+        entityManager
+                .getTransaction()
+                .commit();
+    }
+
     @NonNull
     private static UserDomainObject fromEntity(@NonNull final UserEntity entity) {
         return UserDomainObject.builder()
@@ -56,5 +96,7 @@ public class UserRepository {
 
         return entity;
     }
+
+
 
 }

@@ -16,4 +16,11 @@ public class UserService {
     public UserDomainObject save(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest){
        return userRepository.save(createUserDomainObjectRequest);
     }
+    @NonNull
+    public UserDomainObject update(@NonNull final UserDomainObject userDomainObject) {
+        return userRepository.update(userDomainObject);
+    }
+
+
+
 }

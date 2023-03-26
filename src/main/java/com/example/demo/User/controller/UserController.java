@@ -21,10 +21,20 @@ public class UserController {
 
 
     @PostMapping("user")
-    public ResponseEntity<JsonUserDomainResponse> newUser(@RequestBody @NonNull final JsonCreateUserDomainRequest request) {
-        final UserDomainObject userDomainObject= userService.save(request.toDomainObject());
+    public ResponseEntity<JsonUserDomainResponse> newUser(@RequestBody @NonNull final JsonUpsertUserDomainRequest request) {
+        final UserDomainObject userDomainObject= userService.save(UserControllerHelper.toCreateUserRequest(request));
         return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));
-    }}
+    }
+    @PutMapping("user/{id}")
+    public ResponseEntity<JsonUserDomainResponse> updateUser(@RequestBody @NonNull final JsonUpsertUserDomainRequest request, @PathVariable Long id) {
+        final UserDomainObject userDomainObject = userService.update(UserControllerHelper.toUserDomainObject(request,id));
+        return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));
+    }
+
+
+}
+
+
     //    @GetMapping("user")
 //    CollectionModel<EntityModel<userDomain>> all() {
 //        List<EntityModel<userDomain>> users = userRepository.findAll().stream().map(modelAssembler::toModel).collect(Collectors.toList());
