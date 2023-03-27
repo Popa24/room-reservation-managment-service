@@ -25,5 +25,5 @@ public class JsonUpsertExerciseDomainRequest {
     BigDecimal value;
 
     @JsonProperty("type")
-    String type;
+    JsonTypeEnum type;
 }

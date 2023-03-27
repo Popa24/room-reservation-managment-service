@@ -7,17 +7,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name="exercie")
+@Table(name = "exercie")
 @Data
 public class ExerciseEntity {
     // in total 6 coloane id, name, created_at(timestamp si in cod instant la fel si la updated_at), updated_at, value(big_decimal in cod),type( in cod enum si in db string)
 //create, update,delete, list_by_value.
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     private long id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "created_at")
@@ -29,6 +29,6 @@ public class ExerciseEntity {
     @Column(name = "value")
     private BigDecimal value;
 
-    @Column(name="type")
-   private String type;
+    @Column(name = "type")
+    private String type;
 }

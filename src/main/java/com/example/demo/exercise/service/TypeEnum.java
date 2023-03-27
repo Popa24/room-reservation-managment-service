@@ -1,4 +1,4 @@
-package com.example.demo.exercise.repository;
+package com.example.demo.exercise.service;
 
 public enum TypeEnum {
     COMPLETED, ONGOING, NOT_TARTED;

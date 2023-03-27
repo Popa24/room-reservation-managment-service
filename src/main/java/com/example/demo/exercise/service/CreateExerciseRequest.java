@@ -1,6 +1,5 @@
 package com.example.demo.exercise.service;
 
-import com.example.demo.exercise.repository.TypeEnum;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -10,7 +9,7 @@ import java.time.Instant;
 
 @Value
 @Builder
-public class CreateExerciseDomain {
+public class CreateExerciseRequest {
     @NonNull
     String name;
     @NonNull
@@ -18,8 +17,8 @@ public class CreateExerciseDomain {
     @NonNull
     Instant updated_at;
     @NonNull
-   BigDecimal value;
-   @NonNull
+    BigDecimal value;
+    @NonNull
     TypeEnum type;
 
 

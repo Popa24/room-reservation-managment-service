@@ -1,6 +1,5 @@
 package com.example.demo.exercise.service;
 
-import com.example.demo.exercise.repository.TypeEnum;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;

@@ -1,6 +1,6 @@
 package com.example.demo.exercise.controller;
 
-import com.example.demo.exercise.service.CreateExerciseDomain;
+import com.example.demo.exercise.service.CreateExerciseRequest;
 import com.example.demo.exercise.service.ExerciseDomain;
 import com.example.demo.exercise.service.ExerciseService;
 import lombok.NonNull;
@@ -11,8 +11,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+import static com.example.demo.exercise.controller.ExerciseControllerHelper.toJson;
 
+@RestController(value = "exercise")
 public class ExerciseController {
 
     private final ExerciseService exerciseService;
@@ -21,34 +22,36 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @PostMapping("exercise")
+    @PostMapping
     public ResponseEntity<JsonExerciseDomainResponse> create(@RequestBody @NonNull final JsonUpsertExerciseDomainRequest request) {
-        final CreateExerciseDomain createExerciseDomain = ExerciseControllerHelper.toCreateExerciseDomain(request);
-        final ExerciseDomain exerciseDomain = exerciseService.create(createExerciseDomain);
-        return ResponseEntity.ok().body(JsonExerciseDomainResponse.toJson(exerciseDomain));
+        final CreateExerciseRequest createExerciseRequest = ExerciseControllerHelper.toCreateExerciseDomain(request);
+        final ExerciseDomain exerciseDomain = exerciseService.create(createExerciseRequest);
+        return ResponseEntity.ok().body(ExerciseControllerHelper.toJson(exerciseDomain));
     }
 
-    @PutMapping("exercise/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<JsonExerciseDomainResponse> update(@RequestBody @NonNull final JsonUpsertExerciseDomainRequest request,
                                                              @PathVariable Long id) {
         final ExerciseDomain exerciseDomain = ExerciseControllerHelper.toExerciseDomain(request, id);
         final ExerciseDomain updatedExerciseDomain = exerciseService.update(exerciseDomain);
-        return ResponseEntity.ok().body(JsonExerciseDomainResponse.toJson(updatedExerciseDomain));
+        return ResponseEntity.ok().body(ExerciseControllerHelper.toJson(updatedExerciseDomain));
     }
 
-    @DeleteMapping("exercise/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         exerciseService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(params = "value")
-    public ResponseEntity<List<JsonExerciseDomainResponse>> listByValue(@RequestParam BigDecimal value) {
+    @GetMapping("list")
+    public ResponseEntity<List<JsonExerciseDomainResponse>> listByValue(@RequestParam(name = "value") BigDecimal value) {
         final List<ExerciseDomain> exerciseDomains = exerciseService.listByValue(value);
+
         final List<JsonExerciseDomainResponse> jsonExerciseDomainResponses =
                 exerciseDomains.stream()
-                        .map(JsonExerciseDomainResponse::toJson)
+                        .map(ExerciseControllerHelper::toJson)
                         .collect(Collectors.toList());
+
         return ResponseEntity.ok().body(jsonExerciseDomainResponses);
     }
 

@@ -1,7 +1,8 @@
 package com.example.demo.exercise.repository;
 
-import com.example.demo.exercise.service.CreateExerciseDomain;
+import com.example.demo.exercise.service.CreateExerciseRequest;
 import com.example.demo.exercise.service.ExerciseDomain;
+import com.example.demo.exercise.service.TypeEnum;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -21,14 +22,14 @@ public class ExerciseRepository {
         this.entityManager = entityManager;
     }
 
-    public ExerciseDomain create(CreateExerciseDomain createExerciseDomain) {
+    public ExerciseDomain create(CreateExerciseRequest createExerciseRequest) {
         final EntityManager em = entityManager
                 .getEntityManagerFactory()
                 .createEntityManager();
 
         em.getTransaction().begin();
 
-        final ExerciseEntity entity = toEntity(createExerciseDomain);
+        final ExerciseEntity entity = toEntity(createExerciseRequest);
 
         em.persist(entity);
         em.getTransaction().commit();
@@ -70,6 +71,7 @@ public class ExerciseRepository {
         List<ExerciseEntity> entities = query.getResultList();
         return entities.stream().map(ExerciseRepository::fromEntity).toList();
     }
+
     @NonNull
     private static ExerciseDomain fromEntity(@NonNull final ExerciseEntity entity) {
         return ExerciseDomain.builder()
@@ -83,13 +85,13 @@ public class ExerciseRepository {
     }
 
     @NonNull
-    private static ExerciseEntity toEntity(@NonNull final CreateExerciseDomain createExerciseDomain) {
+    private static ExerciseEntity toEntity(@NonNull final CreateExerciseRequest createExerciseRequest) {
         final ExerciseEntity entity = new ExerciseEntity();
-        entity.setName(createExerciseDomain.getName());
-        entity.setCreated_at(Timestamp.from(createExerciseDomain.getCreated_at()));
-        entity.setUpdated_at(Timestamp.from(createExerciseDomain.getUpdated_at()));
-        entity.setValue(createExerciseDomain.getValue());
-        entity.setType(createExerciseDomain.getType().toString());
+        entity.setName(createExerciseRequest.getName());
+        entity.setCreated_at(Timestamp.from(createExerciseRequest.getCreated_at()));
+        entity.setUpdated_at(Timestamp.from(createExerciseRequest.getUpdated_at()));
+        entity.setValue(createExerciseRequest.getValue());
+        entity.setType(createExerciseRequest.getType().toString());
         return entity;
     }
 }

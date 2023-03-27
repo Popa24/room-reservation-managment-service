@@ -16,8 +16,8 @@ public class ExerciseService {
         this.exerciseRepository = exerciseRepository;
     }
 
-    public ExerciseDomain create(@NonNull final CreateExerciseDomain createExerciseDomain) {
-        return exerciseRepository.create(createExerciseDomain);
+    public ExerciseDomain create(@NonNull final CreateExerciseRequest createExerciseRequest) {
+        return exerciseRepository.create(createExerciseRequest);
     }
 
     public ExerciseDomain update(@NonNull final ExerciseDomain exerciseDomain
