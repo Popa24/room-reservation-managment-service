@@ -4,8 +4,13 @@ import com.example.demo.user.service.CreateUserDomainObjectRequest;
 import com.example.demo.user.service.UserDomainObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -33,6 +38,10 @@ public class UserRepository {
         return fromEntity(entity);
     }
 
+    public String getPassword(Long userId) {
+        UserEntity userEntity = entityManager.find(UserEntity.class, userId);
+        return userEntity != null ? userEntity.getPassword() : null;
+    }
 
     public @NonNull UserDomainObject update(@NonNull UserDomainObject user) {
         final EntityManager em = entityManager
@@ -72,6 +81,16 @@ public class UserRepository {
                 .getTransaction()
                 .commit();
     }
+    public UserDomainObject findByEmail(String email) {
+        TypedQuery<UserEntity> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email", UserEntity.class);
+        query.setParameter("email", email);
+        List<UserEntity> resultList = query.getResultList();
+        return resultList.isEmpty() ? null : fromEntity(resultList.get(0));
+    }
+    public List<UserDomainObject> getAllUsers() {
+        List<UserEntity> entities = entityManager.createQuery("SELECT u FROM UserEntity u", UserEntity.class).getResultList();
+        return entities.stream().map(UserRepository::fromEntity).collect(Collectors.toList());
+    }
 
     @NonNull
     private static UserDomainObject fromEntity(@NonNull final UserEntity entity) {
@@ -88,10 +107,12 @@ public class UserRepository {
     @NonNull
     private static UserEntity toEntity(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest) {
         final UserEntity entity = new UserEntity();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         entity.setName(createUserDomainObjectRequest.getName());
         entity.setSurname(createUserDomainObjectRequest.getSurname());
         entity.setEmail(createUserDomainObjectRequest.getEmail());
-        entity.setPassword(createUserDomainObjectRequest.getPassword());
+        entity.setPassword(passwordEncoder.encode(createUserDomainObjectRequest.getPassword()));
         entity.setRoles("admin");
 
         return entity;
