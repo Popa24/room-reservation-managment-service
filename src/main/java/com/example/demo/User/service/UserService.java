@@ -15,9 +15,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
     @NonNull
-    public UserDomainObject save(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest){
-       return userRepository.save(createUserDomainObjectRequest);
+    public UserDomainObject save(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest) {
+        if (isEmailInUse(createUserDomainObjectRequest.getEmail())) {
+            throw new IllegalStateException("Email already in use");
+        }
+        return userRepository.save(createUserDomainObjectRequest);
     }
+    @NonNull
+    public boolean isEmailInUse(String email) {
+        return findByEmail(email) != null;
+    }
+
     public String getPassword(Long userId) {
         return userRepository.getPassword(userId);
     }

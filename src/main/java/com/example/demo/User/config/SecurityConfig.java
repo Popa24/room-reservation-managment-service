@@ -14,8 +14,7 @@ public class SecurityConfig {
         ApiJsonWebTokenFilter apiJsonWebTokenFilter = new ApiJsonWebTokenFilter();
         registrationBean.setFilter(apiJsonWebTokenFilter);
         registrationBean.addUrlPatterns("/api/*");
-        registrationBean.addInitParameter("excludedPaths", "/api/create/user"); // Exclude the login endpoint
-        registrationBean.addInitParameter("excludedPaths", "/api/login"); // Exclude the login endpoint
+        registrationBean.addInitParameter("excludedPaths", "/api/login,/api/create/user"); // Exclude the login endpoint
 
         return registrationBean;
     }

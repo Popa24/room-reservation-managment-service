@@ -1,9 +1,9 @@
 package com.example.demo.user.authentication;
 
-import com.example.demo.user.authentication.LoginController;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ApiJsonWebTokenFilter implements Filter {
 
-    private Set<String> excludedPaths = new HashSet<>();
+    private final Set<String> excludedPaths = new HashSet<>();
 
     @Override
     public void init(FilterConfig filterConfig) {
