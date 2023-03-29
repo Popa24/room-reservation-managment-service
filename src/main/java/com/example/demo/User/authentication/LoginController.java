@@ -2,7 +2,6 @@ package com.example.demo.user.authentication;
 
 import com.example.demo.user.service.UserDomainObject;
 import com.example.demo.user.service.UserService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +35,7 @@ public class LoginController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) { // Verify the password
-            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(), 86000)); // 24 hours in milliseconds
+            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(), 999999999)); // 24 hours in milliseconds
 
             return ResponseEntity.ok(new com.example.demo.user.dto.JsonLoginResponse(token));
         } else {
@@ -68,11 +67,11 @@ public class LoginController {
         return builder.compact();
     }
 
-    public static Claims decodeJWT(String jwt) {
+    public static void decodeJWT(String jwt) {
         byte[] apiKeySecretBytes = Base64.getDecoder().decode(SECRET_KEY);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
-        return Jwts.parserBuilder()
+        Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(jwt).getBody();
