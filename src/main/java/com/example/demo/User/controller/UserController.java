@@ -27,7 +27,7 @@ public class UserController {
         return ResponseEntity.ok().body(jsonResponse);
     }
 
-    @PostMapping("/api/user")
+    @PostMapping("/api/create/user")
     public ResponseEntity<JsonUserDomainResponse> newUser(@RequestBody @NonNull final JsonUpsertUserDomainRequest request) {
         final UserDomainObject userDomainObject = userService.save(UserControllerHelper.toCreateUserRequest(request));
         return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));
