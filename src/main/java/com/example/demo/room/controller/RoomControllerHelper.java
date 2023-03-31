@@ -17,6 +17,7 @@ public class RoomControllerHelper {
                 .streetNo(jsonRequest.getStreetNo())
                 .capacity(jsonRequest.getCapacity())
                 .price(jsonRequest.getPrice())
+                .description(jsonRequest.getDescription())
                 .build();
     }
 
@@ -29,6 +30,7 @@ public class RoomControllerHelper {
                 .streetNo(jsonUpsertRoomDomainRequest.getStreetNo())
                 .capacity(jsonUpsertRoomDomainRequest.getCapacity())
                 .price(jsonUpsertRoomDomainRequest.getPrice())
+                .description(jsonUpsertRoomDomainRequest.getDescription())
                 .build();
     }
 }

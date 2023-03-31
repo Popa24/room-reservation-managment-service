@@ -21,4 +21,6 @@ public class JsonUpsertRoomDomainRequest {
     int capacity;
     @JsonProperty("price")
     int price;
+    @JsonProperty("description")
+    String description;
 }

@@ -20,7 +20,9 @@ public class RoomService {
     public RoomDomainObject save(@NonNull final CreateRoomDomainObjectRequest createRoomDomainObjectRequest) {
         return roomRepository.save(createRoomDomainObjectRequest);
     }
-
+    public boolean existsByNameAndLocation(String name, String ciy,String street, int streetNo) {
+        return roomRepository.existsByNameAndLocation(name, ciy,street,streetNo);
+    }
     @NonNull
     public RoomDomainObject update(@NonNull final RoomDomainObject roomDomainObject) {
         return roomRepository.update(roomDomainObject);

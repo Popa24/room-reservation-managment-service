@@ -1,8 +1,6 @@
 package com.example.demo.reservation.service;
 
 import com.example.demo.reservation.repository.ReservationRepository;
-import com.example.demo.reservation.service.ReservationDomainObject;
-import com.example.demo.reservation.service.ReservationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -13,7 +13,12 @@ public class CreateRoomDomainObjectRequest {
     String city;
     @NonNull
     String street;
+    @NonNull
     int streetNo;
+    @NonNull
     int capacity;
+    @NonNull
     int price;
+    @NonNull
+    String description;
 }

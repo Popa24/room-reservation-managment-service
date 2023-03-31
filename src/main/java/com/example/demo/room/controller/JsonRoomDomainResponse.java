@@ -25,6 +25,8 @@ public class JsonRoomDomainResponse {
     int capacity;
     @JsonProperty("price")
     int price;
+    @JsonProperty("description")
+    String description;
 
     @NonNull
     public static JsonRoomDomainResponse toJson(@NonNull final RoomDomainObject roomDomainObject) {
@@ -36,6 +38,7 @@ public class JsonRoomDomainResponse {
                 .streetNo(roomDomainObject.getStreetNo())
                 .capacity(roomDomainObject.getCapacity())
                 .price(roomDomainObject.getPrice())
+                .description(roomDomainObject.getDescription())
                 .build();
     }
 }

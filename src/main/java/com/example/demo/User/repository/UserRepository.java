@@ -113,7 +113,7 @@ public class UserRepository {
         entity.setSurname(createUserDomainObjectRequest.getSurname());
         entity.setEmail(createUserDomainObjectRequest.getEmail());
         entity.setPassword(passwordEncoder.encode(createUserDomainObjectRequest.getPassword()));
-        entity.setRoles("admin");
+        entity.setRoles("user");
 
         return entity;
     }

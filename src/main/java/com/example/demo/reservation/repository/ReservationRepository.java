@@ -8,7 +8,6 @@ import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 

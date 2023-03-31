@@ -5,7 +5,6 @@ import com.example.demo.room.service.CreateRoomDomainObjectRequest;
 import com.example.demo.room.service.RoomDomainObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -36,6 +35,10 @@ public class RoomRepository {
         return fromEntity(entity);
     }
 
+    public boolean existsByNameAndLocation(String name, String city,String street, int streetNo) {
+        return false;
+    }
+
     public @NonNull RoomDomainObject update(@NonNull RoomDomainObject room) {
         final EntityManager em = entityManager
                 .getEntityManagerFactory()
@@ -48,6 +51,7 @@ public class RoomRepository {
         entity.setStreetNo(room.getStreetNo());
         entity.setCapacity(room.getCapacity());
         entity.setPrice(room.getPrice());
+        entity.setDescription(room.getDescription());
 
         em.getTransaction().begin();
         em.persist(entity);
@@ -83,6 +87,7 @@ public class RoomRepository {
                 .streetNo(entity.getStreetNo())
                 .capacity(entity.getCapacity())
                 .price(entity.getPrice())
+                .description(entity.getDescription())
                 .build();
     }
 
@@ -96,6 +101,7 @@ public class RoomRepository {
         entity.setStreetNo(createRoomDomainObjectRequest.getStreetNo());
         entity.setCapacity(createRoomDomainObjectRequest.getCapacity());
         entity.setPrice(createRoomDomainObjectRequest.getPrice());
+        entity.setDescription(createRoomDomainObjectRequest.getDescription());
 
         return entity;
     }

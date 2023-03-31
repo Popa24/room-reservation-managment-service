@@ -38,4 +38,5 @@ public class UserController {
         final UserDomainObject userDomainObject = userService.update(UserControllerHelper.toUserDomainObject(request, id));
         return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));
     }
+
 }
