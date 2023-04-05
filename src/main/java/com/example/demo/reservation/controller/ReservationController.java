@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +22,20 @@ public class ReservationController {
     }
 
     @PostMapping("/create/reservation")
-    public ResponseEntity<JsonReservationDomainResponse> createReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request) {
+    public ResponseEntity<?> createReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request) {
         if (reservationService.isRoomAvailable(request.getRoomId(), request.getStartDate(), request.getEndDate())) {
             final ReservationDomainObject reservationDomainObject = reservationService.save(ReservationControllerHelper.toCreateReservationRequest(request));
             return ResponseEntity.ok().body(JsonReservationDomainResponse.toJson(reservationDomainObject));
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            List<ReservationDomainObject> overlappingReservations = reservationService.findOverlappingReservations(request.getRoomId(), request.getStartDate(), request.getEndDate());
+            ReservationDomainObject nextAvailableReservation = overlappingReservations.stream().max(Comparator.comparing(ReservationDomainObject::getEndDate)).orElse(null);
+
+            String errorMessage = "The room is already booked for that interval.";
+            if (nextAvailableReservation != null) {
+                errorMessage += " The room would be available for booking after " + nextAvailableReservation.getEndDate() ;
+            }
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
         }
     }
 

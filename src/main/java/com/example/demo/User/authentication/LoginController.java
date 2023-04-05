@@ -2,9 +2,7 @@ package com.example.demo.user.authentication;
 
 import com.example.demo.user.service.UserDomainObject;
 import com.example.demo.user.service.UserService;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +33,14 @@ public class LoginController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) { // Verify the password
-            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(), 999999999)); // 24 hours in milliseconds
+            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(),user.getRoles(), 999999999)); // 24 hours in milliseconds
 
             return ResponseEntity.ok(new com.example.demo.user.dto.JsonLoginResponse(token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
-    public static String createJWT(String id, String subject, long ttlMillis) {
+    public static String createJWT(String id, String subject,String role, long ttlMillis) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
@@ -55,6 +53,7 @@ public class LoginController {
                 .setId(id)
                 .setIssuedAt(now)
                 .setSubject(subject)
+                .setAudience(role)
                 .setIssuer("popa")
                 .signWith(signingKey, signatureAlgorithm);
 
@@ -67,15 +66,18 @@ public class LoginController {
         return builder.compact();
     }
 
-    public static void decodeJWT(String jwt) {
+    public static Claims decodeJWT(String jwt) {
         byte[] apiKeySecretBytes = Base64.getDecoder().decode(SECRET_KEY);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
 
-        Jwts.parserBuilder()
+        Jws<Claims> jws = Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
-                .parseClaimsJws(jwt).getBody();
+                .parseClaimsJws(jwt);
+
+        return jws.getBody();
     }
+
 
 
 }

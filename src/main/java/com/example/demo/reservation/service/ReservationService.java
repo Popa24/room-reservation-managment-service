@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -19,6 +20,12 @@ public class ReservationService {
 
     public ReservationDomainObject save(@NonNull final CreateReservationDomainObjectRequest createReservationDomainObjectRequest) {
         return reservationRepository.save(createReservationDomainObjectRequest);
+    }
+    public List<ReservationDomainObject> findOverlappingReservations(Long roomId, Timestamp startDate, Timestamp endDate) {
+        return reservationRepository.getReservationsByRoomId(roomId).stream()
+                .filter(reservation -> (reservation.getStartDate().before(endDate) || reservation.getStartDate().equals(endDate)) &&
+                        (reservation.getEndDate().after(startDate) || reservation.getEndDate().equals(startDate)))
+                .collect(Collectors.toList());
     }
 
     public ReservationDomainObject findById(@NonNull final Long id) {
