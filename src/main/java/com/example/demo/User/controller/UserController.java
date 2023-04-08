@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping
+@RequestMapping("api/user")
 public class UserController {
 
     private final UserService userService;
@@ -20,20 +20,20 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/users")
+    @GetMapping
     public ResponseEntity<List<JsonUserDomainResponse>> getAllUsers() {
         List<UserDomainObject> userDomainObjects = userService.getAllUsers();
         List<JsonUserDomainResponse> jsonResponse = userDomainObjects.stream().map(JsonUserDomainResponse::toJson).collect(Collectors.toList());
         return ResponseEntity.ok().body(jsonResponse);
     }
 
-    @PostMapping("/api/create/user")
+    @PostMapping("/create")
     public ResponseEntity<JsonUserDomainResponse> newUser(@RequestBody @NonNull final JsonUpsertUserDomainRequest request) {
         final UserDomainObject userDomainObject = userService.save(UserControllerHelper.toCreateUserRequest(request));
         return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));
     }
 
-    @PutMapping("/api/user/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<JsonUserDomainResponse> updateUser(@RequestBody @NonNull final JsonUpsertUserDomainRequest request, @PathVariable Long id) {
         final UserDomainObject userDomainObject = userService.update(UserControllerHelper.toUserDomainObject(request, id));
         return ResponseEntity.ok().body(JsonUserDomainResponse.toJson(userDomainObject));

@@ -15,7 +15,7 @@ public class SecurityConfig {
         ApiJsonWebTokenFilter apiJsonWebTokenFilter = new ApiJsonWebTokenFilter();
         registrationBean.setFilter(apiJsonWebTokenFilter);
         registrationBean.addUrlPatterns("/api/*");
-        registrationBean.addInitParameter("excludedPaths", "/api/login,/api/create/user"); // Exclude the login endpoint
+        registrationBean.addInitParameter("excludedPaths", "/api/login,/api/user/create"); // Exclude the login endpoint
 
         return registrationBean;
     }
@@ -23,8 +23,9 @@ public class SecurityConfig {
     public FilterRegistrationBean<AdminAuthorizationFilter> adminAuthorizationFilter() {
         FilterRegistrationBean<AdminAuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new AdminAuthorizationFilter());
-        registrationBean.addUrlPatterns("/api/room");
-        registrationBean.addUrlPatterns("/api/user/*");
+        registrationBean.addUrlPatterns("/api/room/create");
+        registrationBean.addUrlPatterns("/api/user/update/*");
+        registrationBean.addUrlPatterns("/api/room/top-rented");
         return registrationBean;
     }
 }

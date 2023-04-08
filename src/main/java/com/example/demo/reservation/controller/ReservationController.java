@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -21,7 +21,7 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/create/reservation")
+    @PostMapping("/create")
     public ResponseEntity<?> createReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request) {
         if (reservationService.isRoomAvailable(request.getRoomId(), request.getStartDate(), request.getEndDate())) {
             final ReservationDomainObject reservationDomainObject = reservationService.save(ReservationControllerHelper.toCreateReservationRequest(request));
@@ -40,14 +40,14 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/reservation/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<JsonReservationDomainResponse> getReservationById(@PathVariable Long id) {
         ReservationDomainObject reservationDomainObject = reservationService.findById(id);
         return reservationDomainObject != null ? ResponseEntity.ok(ReservationControllerHelper.toJsonReservationDomainResponse(reservationDomainObject))
                 : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/reservations")
+    @GetMapping
     public ResponseEntity<List<JsonReservationDomainResponse>> getAllReservations() {
         List<ReservationDomainObject> reservationDomainObjects = reservationService.findAll();
         List<JsonReservationDomainResponse> jsonResponse = reservationDomainObjects.stream()
@@ -56,13 +56,13 @@ public class ReservationController {
         return ResponseEntity.ok(jsonResponse);
     }
 
-    @PutMapping("/reservation/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<JsonReservationDomainResponse> updateReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request, @PathVariable Long id) {
         final ReservationDomainObject reservationDomainObject = reservationService.update(ReservationControllerHelper.toReservationDomainObject(request, id));
         return ResponseEntity.ok().body(JsonReservationDomainResponse.toJson(reservationDomainObject));
     }
 
-    @DeleteMapping("/reservation/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
         reservationService.delete(id);
         return ResponseEntity.noContent().build();

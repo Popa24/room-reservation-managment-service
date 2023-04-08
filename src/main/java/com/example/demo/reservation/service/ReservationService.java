@@ -5,7 +5,11 @@ import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -13,10 +17,11 @@ public class ReservationService {
     @NonNull
     final ReservationRepository reservationRepository;
 
+
     public ReservationService(@NonNull final ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-    }
 
+    }
 
     public ReservationDomainObject save(@NonNull final CreateReservationDomainObjectRequest createReservationDomainObjectRequest) {
         return reservationRepository.save(createReservationDomainObjectRequest);
@@ -49,6 +54,40 @@ public class ReservationService {
                 (reservation.getStartDate().before(endDate) || reservation.getStartDate().equals(endDate)) &&
                         (reservation.getEndDate().after(startDate) || reservation.getEndDate().equals(startDate)));
     }
+    private int getNrOfReservations(Long roomId, Map<Long, List<ReservationDomainObject>> reservationMap) {
+        List<ReservationDomainObject> reservations = reservationMap.getOrDefault(roomId, Collections.emptyList());
+        return reservations.size();
+    }
+
+    private int getTotalAmountOfRentedTime( List<ReservationDomainObject> reservations) {
+        return reservations.stream()
+                .mapToInt(reservationDomainObject -> (int) TimeUnit.MILLISECONDS.toHours(
+                        reservationDomainObject.getEndDate().getTime() - reservationDomainObject.getStartDate().getTime()
+                ))
+                .sum();
+    }
+
+    public List<AggregateRoomReservationInfo> getMostRented() {
+        List<AggregateRoomReservationInfo> output = new ArrayList<>();
+        Map<Long, List<ReservationDomainObject>> reservationMap = findAll().stream()
+                .collect(Collectors.groupingBy(ReservationDomainObject::getRoomId));
+
+        for (Map.Entry<Long, List<ReservationDomainObject>> entry : reservationMap.entrySet()) {
+            Long roomId = entry.getKey();
+            int nrOfReservations = entry.getValue().size();
+            int totalAmountOfRentedTime = getTotalAmountOfRentedTime(entry.getValue());
+
+
+            output.add(
+                    AggregateRoomReservationInfo.builder()
+                            .roomId(roomId)
+                            .nrOfReservations(nrOfReservations)
+                            .totalAmountOfRentedTime(totalAmountOfRentedTime)
+                            .build());
+        }
+        return output;
+    }
+
 
 
 }

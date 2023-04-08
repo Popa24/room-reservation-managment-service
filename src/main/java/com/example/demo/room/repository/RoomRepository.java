@@ -34,6 +34,10 @@ public class RoomRepository {
         em.getTransaction().commit();
         return fromEntity(entity);
     }
+    public Integer getPriceById(Long roomId) {
+        RoomEntity roomEntity = entityManager.find(RoomEntity.class, roomId);
+        return roomEntity != null ? roomEntity.getPrice() : null;
+    }
 
     public boolean existsByNameAndLocation(String name, String city,String street, int streetNo) {
         return false;
@@ -61,13 +65,12 @@ public class RoomRepository {
 
     @NonNull
     public RoomDomainObject getById(Long roomId) {
-        RoomDomainObject room = entityManager.find(RoomDomainObject.class, roomId);
-        entityManager.detach(room);
-        return room;
+        RoomEntity room = entityManager.find(RoomEntity.class, roomId);
+        return fromEntity(room);
     }
 
     public void delete(@NonNull final Long roomId) {
-        RoomDomainObject room = entityManager.find(RoomDomainObject.class, roomId);
+        RoomEntity room = entityManager.find(RoomEntity.class, roomId);
         entityManager.remove(room);
         entityManager.getTransaction().commit();
     }

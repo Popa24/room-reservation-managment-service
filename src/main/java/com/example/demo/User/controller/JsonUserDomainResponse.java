@@ -21,7 +21,6 @@ public class JsonUserDomainResponse {
     String email;
     @JsonProperty("password")
     String password;
-
     @JsonProperty("role")
     String role;
 
