@@ -4,7 +4,9 @@ import com.example.demo.user.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -28,6 +30,17 @@ public class UserService {
 
     public String getPassword(Long userId) {
         return userRepository.getPassword(userId);
+    }
+    private final Map<Integer, UserDomainObject> userCache = new HashMap<>();
+
+    public UserInfoDto getUserInfo(Integer userId) {
+
+        UserDomainObject userDomainObject = userCache.computeIfAbsent(userId, userRepository::getById);
+
+        return UserInfoDto.builder()
+                .user_id(userId)
+                .email(userDomainObject.getEmail())
+                .build();
     }
 
     @NonNull

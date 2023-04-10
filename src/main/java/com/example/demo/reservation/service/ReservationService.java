@@ -66,7 +66,18 @@ public class ReservationService {
                 ))
                 .sum();
     }
-
+    public Timestamp findFirstStartDateByRoomId(Long roomId){
+        return reservationRepository.findFirstStartDateByRoomId(roomId);
+    }
+    public Timestamp findLastEndDateByRoomId(Long roomId){
+        return reservationRepository.findLastEndDateByRoomId(roomId);
+    }
+    public ReservationDomainObject findReservationByRoomId(Long roomId){
+        return reservationRepository.findReservationByRoomId(roomId);
+    }
+    public List<Long> findReservationIdsByRoomId(Long roomId){
+        return reservationRepository.findReservationIdsByRoomId(roomId);
+    }
     public List<AggregateRoomReservationInfo> getMostRented() {
         List<AggregateRoomReservationInfo> output = new ArrayList<>();
         Map<Long, List<ReservationDomainObject>> reservationMap = findAll().stream()
@@ -87,7 +98,4 @@ public class ReservationService {
         }
         return output;
     }
-
-
-
 }

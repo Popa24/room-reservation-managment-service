@@ -8,6 +8,7 @@ import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,32 @@ public class ReservationRepository {
         em.persist(entity);
         em.getTransaction().commit();
         return fromEntity(entity);
+    }
+    public Timestamp findFirstStartDateByRoomId(Long roomId) {
+        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId ORDER BY r.startDate ASC", ReservationEntity.class);
+        query.setParameter("roomId", roomId);
+        query.setMaxResults(1);
+        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
+        return result != null ? result.getStartDate() : null;
+    }
+    public Timestamp findLastEndDateByRoomId(Long roomId) {
+        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId ORDER BY r.endDate DESC", ReservationEntity.class);
+        query.setParameter("roomId", roomId);
+        query.setMaxResults(1);
+        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
+        return result != null ? result.getEndDate() : null;
+    }
+
+    public ReservationDomainObject findReservationByRoomId(Long roomId) {
+        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId", ReservationEntity.class);
+        query.setParameter("roomId", roomId);
+        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
+        return result != null ? fromEntity(result) : null;
+    }
+    public List<Long> findReservationIdsByRoomId(Long roomId) {
+        TypedQuery<Long> query = entityManager.createQuery("SELECT r.id FROM ReservationEntity r WHERE r.roomId = :roomId", Long.class);
+        query.setParameter("roomId", roomId);
+        return query.getResultList();
     }
 
     public ReservationDomainObject findById(Long id) {
@@ -61,7 +88,7 @@ public class ReservationRepository {
         ReservationEntity reservationEntity = em.find(ReservationEntity.class, reservationDomainObject.getId());
 
         if (reservationEntity != null) {
-            reservationEntity.setUserId(reservationDomainObject.getUserId());
+            reservationEntity.setUserId(Long.valueOf(reservationDomainObject.getUserId()));
             reservationEntity.setRoomId(reservationDomainObject.getRoomId());
             reservationEntity.setStartDate(reservationDomainObject.getStartDate());
             reservationEntity.setEndDate(reservationDomainObject.getEndDate());
@@ -86,7 +113,7 @@ public class ReservationRepository {
     private static ReservationDomainObject fromEntity(@NonNull final ReservationEntity entity) {
         return ReservationDomainObject.builder()
                 .id(entity.getId())
-                .userId(entity.getUserId())
+                .userId(Math.toIntExact(entity.getUserId()))
                 .roomId(entity.getRoomId())
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())

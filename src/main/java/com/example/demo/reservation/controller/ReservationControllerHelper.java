@@ -22,7 +22,7 @@ public class ReservationControllerHelper {
     public static JsonReservationDomainResponse toJsonReservationDomainResponse(@NonNull final ReservationDomainObject reservationDomainObject) {
         return JsonReservationDomainResponse.builder()
                 .id(reservationDomainObject.getId())
-                .userId(reservationDomainObject.getUserId())
+                .userId(Long.valueOf(reservationDomainObject.getUserId()))
                 .roomId(reservationDomainObject.getRoomId())
                 .startDate(reservationDomainObject.getStartDate())
                 .endDate(reservationDomainObject.getEndDate())
@@ -30,7 +30,7 @@ public class ReservationControllerHelper {
     }
     public @NonNull ReservationDomainObject toReservationDomainObject(@NonNull final JsonUpsertReservationDomainRequest jsonRequest, Long id) {
         return ReservationDomainObject.builder()
-                .userId(id)
+                .userId(Math.toIntExact(id))
                 .roomId(jsonRequest.getRoomId())
                 .startDate(jsonRequest.getStartDate())
                 .endDate(jsonRequest.getEndDate())

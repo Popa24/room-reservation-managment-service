@@ -1,20 +1,15 @@
-package com.example.demo.reservation.service;
+package com.example.demo.room.service;
 
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 @Value
 @Builder
-public class ReservationDomainObject {
-    @NonNull
-    Long id;
-    @NonNull
-    Integer userId;
-    @NonNull
-    Long roomId;
+public class TimeFrameDto {
     @NonNull
     Timestamp startDate;
     @NonNull

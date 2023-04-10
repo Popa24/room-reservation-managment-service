@@ -1,5 +1,6 @@
 package com.example.demo.room.controller;
 
+import com.example.demo.room.service.AllRoomInformationDto;
 import com.example.demo.room.service.RoomDomainObject;
 import com.example.demo.room.service.RoomService;
 import com.example.demo.room.service.TopRented;
@@ -30,12 +31,18 @@ public class RoomController {
         return ResponseEntity.ok().body(jsonResponse);
     }
     @GetMapping("/top-rented")
-    public ResponseEntity<List<JsonTopRentedResponse>> getTopRentedRooms() {
-        List<TopRented>room= roomService.getTopRentedRooms();
+    public ResponseEntity<List<JsonTopRentedResponse>> getTopRentedRooms(@RequestParam(required = false) Integer top, @RequestParam(required = false) Integer minGeneratedRevenue) {
+        List<TopRented>room= roomService.getTopRentedRooms(top, minGeneratedRevenue);
         List<JsonTopRentedResponse>jsonResponse=room.stream().map(JsonTopRentedResponse::toJson).toList();
         return ResponseEntity.ok().body(jsonResponse);
     }
 
+    @GetMapping("/all-room-info/{roomId}")
+    public ResponseEntity<JsonAllRoomInformationDtoResponse> getAllRoomInfo(@PathVariable Long roomId) {
+        AllRoomInformationDto allRoomInformationDto = roomService.buildAllRoomInformationDto(roomId);
+        JsonAllRoomInformationDtoResponse response = JsonAllRoomInformationDtoResponse.toJson(allRoomInformationDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     @PostMapping("/create")
     public ResponseEntity<JsonRoomDomainResponse> newRoom(@RequestBody @NonNull final JsonUpsertRoomDomainRequest request) {
         final RoomDomainObject roomDomainObject = roomService.save(RoomControllerHelper.toCreateRoomRequest(request));
