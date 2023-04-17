@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Value

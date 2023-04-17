@@ -32,7 +32,7 @@ public class ReservationServiceTest {
     public void setUp() {
         reservation1 = ReservationDomainObject.builder()
                 .id(1L)
-                .userId(1L)
+                .userId(1)
                 .roomId(1L)
                 .startDate(Timestamp.valueOf("2023-04-01 14:00:00"))
                 .endDate(Timestamp.valueOf("2023-04-01 16:00:00"))
@@ -40,7 +40,7 @@ public class ReservationServiceTest {
 
         reservation2 = ReservationDomainObject.builder()
                 .id(2L)
-                .userId(2L)
+                .userId(2)
                 .roomId(1L)
                 .startDate(Timestamp.valueOf("2023-04-01 18:00:00"))
                 .endDate(Timestamp.valueOf("2023-04-01 20:00:00"))

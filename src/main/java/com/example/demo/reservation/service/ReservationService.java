@@ -1,26 +1,27 @@
 package com.example.demo.reservation.service;
 
 import com.example.demo.reservation.repository.ReservationRepository;
+import com.example.demo.user.service.UserInfoDto;
+import com.example.demo.user.service.UserService;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
     @NonNull
     final ReservationRepository reservationRepository;
+    final UserService userService;
 
-
-    public ReservationService(@NonNull final ReservationRepository reservationRepository) {
+    public ReservationService(@NonNull final ReservationRepository reservationRepository,@NonNull final UserService userService) {
         this.reservationRepository = reservationRepository;
-
+        this.userService = userService;
     }
 
     public ReservationDomainObject save(@NonNull final CreateReservationDomainObjectRequest createReservationDomainObjectRequest) {
@@ -48,6 +49,40 @@ public class ReservationService {
     public ReservationDomainObject update(@NonNull final ReservationDomainObject reservationDomainObject) {
         return reservationRepository.update(reservationDomainObject);
     }
+    public int getTotalAmountOfRentedTime(Long roomId, List<ReservationDomainObject> reservations) {
+        List<ReservationDomainObject> reservationsForRoom = reservations.stream()
+                .filter(r -> r.getRoomId().equals(roomId))
+                .toList();
+
+        return reservationsForRoom.stream()
+                .mapToInt(r -> (int) Duration.between(r.getStartDate().toLocalDateTime(), r.getEndDate().toLocalDateTime()).toHours())
+                .sum();
+    }
+
+    public List<ReservationInfoDto> buildReservationInfoDtoList(List<Long> reservationIds, List<ReservationDomainObject> reservations) {
+        List<ReservationInfoDto> reservationInfoDtoList = new ArrayList<>();
+        Map<Integer, UserInfoDto> localUserCache = new HashMap<>();
+
+        Map<Long, ReservationDomainObject> reservationsById = reservations.stream()
+                .collect(Collectors.toMap(ReservationDomainObject::getId, Function.identity()));
+
+        for (Long reservationId : reservationIds) {
+            ReservationDomainObject reservationDomainObject = reservationsById.get(reservationId);
+            Integer userId = reservationDomainObject.getUserId();
+
+            UserInfoDto userInfo = localUserCache.computeIfAbsent(userId, userService::getUserInfo);
+
+            ReservationInfoDto reservationInfoDto = ReservationInfoDto.builder()
+                    .reservationId(reservationDomainObject.getId())
+                    .userInfo(userInfo)
+                    .stardDate(reservationDomainObject.getStartDate())
+                    .enddDate(reservationDomainObject.getEndDate())
+                    .build();
+            reservationInfoDtoList.add(reservationInfoDto);
+        }
+
+        return reservationInfoDtoList;
+    }
     public boolean isRoomAvailable(Long roomId, Timestamp startDate, Timestamp endDate) {
         List<ReservationDomainObject> reservations = reservationRepository.getReservationsByRoomId(roomId);
         return reservations.stream().noneMatch(reservation ->
@@ -58,7 +93,14 @@ public class ReservationService {
         List<ReservationDomainObject> reservations = reservationMap.getOrDefault(roomId, Collections.emptyList());
         return reservations.size();
     }
-
+    public int getTotalAmountOfRentedTime(Long roomId, Map<Long, List<ReservationDomainObject>> reservationMap) {
+        List<ReservationDomainObject> reservations = reservationMap.getOrDefault(roomId, new ArrayList<>());
+        return reservations.stream()
+                .mapToInt(reservationDomainObject -> (int) TimeUnit.MILLISECONDS.toHours(
+                        reservationDomainObject.getEndDate().getTime() - reservationDomainObject.getStartDate().getTime()
+                ))
+                .sum();
+    }
     private int getTotalAmountOfRentedTime( List<ReservationDomainObject> reservations) {
         return reservations.stream()
                 .mapToInt(reservationDomainObject -> (int) TimeUnit.MILLISECONDS.toHours(

@@ -67,14 +67,14 @@ public class UserRepository {
 
     @NonNull
     public UserDomainObject getById(Integer userId) {
-        UserDomainObject user = entityManager.find(UserDomainObject.class, userId);
-        entityManager
-                .detach(user);
-        return user;
+        UserEntity user = entityManager.find(UserEntity.class, userId);
+
+
+        return fromEntity(user);
     }
 
     public void delete(@NonNull final Integer userId) {
-        UserDomainObject user = entityManager.find(UserDomainObject.class, userId);
+        UserEntity user = entityManager.find(UserEntity.class, userId);
         entityManager
                 .remove(user);
         entityManager

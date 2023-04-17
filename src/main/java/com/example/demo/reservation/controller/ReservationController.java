@@ -25,7 +25,7 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request) {
         if (reservationService.isRoomAvailable(request.getRoomId(), request.getStartDate(), request.getEndDate())) {
             final ReservationDomainObject reservationDomainObject = reservationService.save(ReservationControllerHelper.toCreateReservationRequest(request));
-            return ResponseEntity.ok().body(JsonReservationDomainResponse.toJson(reservationDomainObject));
+            return ResponseEntity.ok().body(ReservationControllerHelper.toJson(reservationDomainObject));
         } else {
             List<ReservationDomainObject> overlappingReservations = reservationService.findOverlappingReservations(request.getRoomId(), request.getStartDate(), request.getEndDate());
             ReservationDomainObject nextAvailableReservation = overlappingReservations.stream().max(Comparator.comparing(ReservationDomainObject::getEndDate)).orElse(null);
@@ -59,7 +59,7 @@ public class ReservationController {
     @PutMapping("/{id}")
     public ResponseEntity<JsonReservationDomainResponse> updateReservation(@RequestBody @NonNull final JsonUpsertReservationDomainRequest request, @PathVariable Long id) {
         final ReservationDomainObject reservationDomainObject = reservationService.update(ReservationControllerHelper.toReservationDomainObject(request, id));
-        return ResponseEntity.ok().body(JsonReservationDomainResponse.toJson(reservationDomainObject));
+        return ResponseEntity.ok().body(ReservationControllerHelper.toJson(reservationDomainObject));
     }
 
     @DeleteMapping("/{id}")

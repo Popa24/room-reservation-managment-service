@@ -1,4 +1,4 @@
-package com.example.demo.room.service;
+package com.example.demo.reservation.service;
 
 import com.example.demo.user.service.UserInfoDto;
 import lombok.Builder;

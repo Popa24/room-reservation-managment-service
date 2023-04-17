@@ -24,14 +24,5 @@ public class JsonReservationDomainResponse {
     @JsonProperty("endDate")
     Timestamp endDate;
 
-    @NonNull
-    public static JsonReservationDomainResponse toJson(@NonNull final ReservationDomainObject reservationDomainObject) {
-        return JsonReservationDomainResponse.builder()
-                .id(reservationDomainObject.getId())
-                .userId(Long.valueOf(reservationDomainObject.getUserId()))
-                .roomId(reservationDomainObject.getRoomId())
-                .startDate(reservationDomainObject.getStartDate())
-                .endDate(reservationDomainObject.getEndDate())
-                .build();
-    }
+
 }

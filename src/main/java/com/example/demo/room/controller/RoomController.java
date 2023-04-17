@@ -40,7 +40,7 @@ public class RoomController {
     @GetMapping("/all-room-info/{roomId}")
     public ResponseEntity<JsonAllRoomInformationDtoResponse> getAllRoomInfo(@PathVariable Long roomId) {
         AllRoomInformationDto allRoomInformationDto = roomService.buildAllRoomInformationDto(roomId);
-        JsonAllRoomInformationDtoResponse response = JsonAllRoomInformationDtoResponse.toJson(allRoomInformationDto);
+        JsonAllRoomInformationDtoResponse response = RoomControllerHelper.toJson(allRoomInformationDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/create")

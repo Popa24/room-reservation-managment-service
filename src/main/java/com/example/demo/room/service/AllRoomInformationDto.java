@@ -1,5 +1,6 @@
 package com.example.demo.room.service;
 
+import com.example.demo.reservation.service.ReservationInfoDto;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;

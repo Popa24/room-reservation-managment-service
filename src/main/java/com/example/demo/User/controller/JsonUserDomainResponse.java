@@ -24,15 +24,5 @@ public class JsonUserDomainResponse {
     @JsonProperty("role")
     String role;
 
-    @NonNull
-    public static JsonUserDomainResponse toJson(@NonNull final UserDomainObject userDomainObject) {
-        return JsonUserDomainResponse.builder()
-                .id(userDomainObject.getId())
-                .name(userDomainObject.getName())
-                .surname(userDomainObject.getSurname())
-                .email(userDomainObject.getEmail())
-                .password(userDomainObject.getPassword())
-                .role(userDomainObject.getRoles())
-                .build();
-    }
+
 }

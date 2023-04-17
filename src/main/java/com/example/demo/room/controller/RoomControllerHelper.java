@@ -1,5 +1,6 @@
 package com.example.demo.room.controller;
 
+import com.example.demo.room.service.AllRoomInformationDto;
 import com.example.demo.room.service.CreateRoomDomainObjectRequest;
 import com.example.demo.room.service.RoomDomainObject;
 import lombok.NonNull;
@@ -31,6 +32,14 @@ public class RoomControllerHelper {
                 .capacity(jsonUpsertRoomDomainRequest.getCapacity())
                 .price(jsonUpsertRoomDomainRequest.getPrice())
                 .description(jsonUpsertRoomDomainRequest.getDescription())
+                .build();
+    }
+    public static JsonAllRoomInformationDtoResponse toJson(@NonNull final AllRoomInformationDto allRoomInformationDto){
+        return JsonAllRoomInformationDtoResponse.builder()
+                .name(allRoomInformationDto.getName())
+                .generatedRevenue(allRoomInformationDto.getGeneratedRevenue())
+                .timeframe(allRoomInformationDto.getTimeframe())
+                .reservationInfoList(allRoomInformationDto.getReservationInfoList())
                 .build();
     }
 }

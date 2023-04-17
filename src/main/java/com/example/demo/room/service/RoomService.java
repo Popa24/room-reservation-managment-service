@@ -8,11 +8,11 @@ import com.example.demo.user.service.UserService;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 
 @Service
@@ -27,39 +27,54 @@ public class RoomService {
         this.reservationService = reservationService;
         this.userService = userService;
     }
-    public List<ReservationInfoDto> buildReservationInfoDtoList(List<Long> reservationIds) {
-        List<ReservationInfoDto> reservationInfoDtoList = new ArrayList<>();
+    public AllRoomInformationDto buildAllRoomInformationDto(Long roomId) {
+        List<ReservationDomainObject> reservations = reservationService.findAll();
 
-        for (Long reservationId : reservationIds) {
-            ReservationDomainObject reservationDomainObject = reservationService.findById(reservationId);
-            ReservationInfoDto reservationInfoDto = ReservationInfoDto.builder()
-                    .reservationId(reservationDomainObject.getId())
-                    .userInfo(userService.getUserInfo(reservationDomainObject.getUserId()))
-                    .stardDate(reservationDomainObject.getStartDate())
-                    .enddDate(reservationDomainObject.getEndDate())
-                    .build();
-            reservationInfoDtoList.add(reservationInfoDto);
-        }
+        List<ReservationDomainObject> reservationsForRoom = reservations.stream()
+                .filter(r -> r.getRoomId().equals(roomId))
+                .toList();
 
-        return reservationInfoDtoList;
-    }
-    public TimeFrameDto buildTimeFrameDto(Long roomId){
-        return TimeFrameDto.builder()
-                .startDate(reservationService.findFirstStartDateByRoomId(roomId))
-                .endDate(reservationService.findLastEndDateByRoomId(roomId))
-                .build();
-    }
+        List<Long> reservationIds = reservationsForRoom.stream().map(ReservationDomainObject::getId).collect(Collectors.toList());
 
-    public AllRoomInformationDto buildAllRoomInformationDto(Long roomId){
-        ReservationDomainObject reservationDomainObject=reservationService.findReservationByRoomId(roomId);
-        List<AggregateRoomReservationInfo>  aggregateRoomReservationInfoList=reservationService.getMostRented();
+        int totalAmountOfRentedTime = reservationService.getTotalAmountOfRentedTime(roomId, reservations);
+        TimeFrameDto timeFrameDto = buildTimeFrameDto(roomId, reservations);
+
         return AllRoomInformationDto.builder()
                 .name(roomRepository.getById(roomId).getName())
-                .generatedRevenue(getTotalAmountOfRentedTimeByRoomId(roomId,aggregateRoomReservationInfoList)*roomRepository.getById(roomId).getPrice())
-                .timeframe(buildTimeFrameDto(roomId))
-                .reservationInfoList(buildReservationInfoDtoList(reservationService.findReservationIdsByRoomId(roomId)))
+                .generatedRevenue(totalAmountOfRentedTime * roomRepository.getById(roomId).getPrice())
+                .timeframe(timeFrameDto)
+                .reservationInfoList(reservationService.buildReservationInfoDtoList(reservationIds, reservations))
                 .build();
     }
+
+
+
+
+    public TimeFrameDto buildTimeFrameDto(Long roomId, List<ReservationDomainObject> reservations) {
+        List<ReservationDomainObject> reservationsForRoom = reservations.stream()
+                .filter(r -> r.getRoomId().equals(roomId))
+                .toList();
+
+        Optional<Timestamp> firstStartDate = reservationsForRoom.stream()
+                .map(ReservationDomainObject::getStartDate)
+                .min(Comparator.comparing(Timestamp::getTime));
+
+        Optional<Timestamp> lastEndDate = reservationsForRoom.stream()
+                .map(ReservationDomainObject::getEndDate)
+                .max(Comparator.comparing(Timestamp::getTime));
+
+        assert firstStartDate.orElse(null) != null;
+        return TimeFrameDto.builder()
+                .startDate(firstStartDate.orElse(null))
+                .endDate(lastEndDate.orElse(null))
+                .build();
+    }
+
+
+
+
+
+
     public Integer getTotalAmountOfRentedTimeByRoomId(Long roomId, List<AggregateRoomReservationInfo> aggregateRoomReservationInfoList) {
         for (AggregateRoomReservationInfo info : aggregateRoomReservationInfoList) {
             if (info.getRoomId().equals(roomId)) {
@@ -68,6 +83,7 @@ public class RoomService {
         }
         return null;
     }
+
     public List<TopRented> getTopRentedRooms(Integer top, Integer minGeneratedRevenue) {
         return reservationService.getMostRented()
                 .stream()
