@@ -42,4 +42,17 @@ public class RoomControllerHelper {
                 .reservationInfoList(allRoomInformationDto.getReservationInfoList())
                 .build();
     }
+    @NonNull
+    public static JsonRoomDomainResponse toJson(@NonNull final RoomDomainObject roomDomainObject) {
+        return JsonRoomDomainResponse.builder()
+                .id(roomDomainObject.getId())
+                .name(roomDomainObject.getName())
+                .city(roomDomainObject.getCity())
+                .street(roomDomainObject.getStreet())
+                .streetNo(roomDomainObject.getStreetNo())
+                .capacity(roomDomainObject.getCapacity())
+                .price(roomDomainObject.getPrice())
+                .description(roomDomainObject.getDescription())
+                .build();
+    }
 }

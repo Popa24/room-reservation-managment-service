@@ -89,18 +89,8 @@ public class ReservationService {
                 (reservation.getStartDate().before(endDate) || reservation.getStartDate().equals(endDate)) &&
                         (reservation.getEndDate().after(startDate) || reservation.getEndDate().equals(startDate)));
     }
-    private int getNrOfReservations(Long roomId, Map<Long, List<ReservationDomainObject>> reservationMap) {
-        List<ReservationDomainObject> reservations = reservationMap.getOrDefault(roomId, Collections.emptyList());
-        return reservations.size();
-    }
-    public int getTotalAmountOfRentedTime(Long roomId, Map<Long, List<ReservationDomainObject>> reservationMap) {
-        List<ReservationDomainObject> reservations = reservationMap.getOrDefault(roomId, new ArrayList<>());
-        return reservations.stream()
-                .mapToInt(reservationDomainObject -> (int) TimeUnit.MILLISECONDS.toHours(
-                        reservationDomainObject.getEndDate().getTime() - reservationDomainObject.getStartDate().getTime()
-                ))
-                .sum();
-    }
+
+
     private int getTotalAmountOfRentedTime( List<ReservationDomainObject> reservations) {
         return reservations.stream()
                 .mapToInt(reservationDomainObject -> (int) TimeUnit.MILLISECONDS.toHours(
@@ -108,18 +98,7 @@ public class ReservationService {
                 ))
                 .sum();
     }
-    public Timestamp findFirstStartDateByRoomId(Long roomId){
-        return reservationRepository.findFirstStartDateByRoomId(roomId);
-    }
-    public Timestamp findLastEndDateByRoomId(Long roomId){
-        return reservationRepository.findLastEndDateByRoomId(roomId);
-    }
-    public ReservationDomainObject findReservationByRoomId(Long roomId){
-        return reservationRepository.findReservationByRoomId(roomId);
-    }
-    public List<Long> findReservationIdsByRoomId(Long roomId){
-        return reservationRepository.findReservationIdsByRoomId(roomId);
-    }
+
     public List<AggregateRoomReservationInfo> getMostRented() {
         List<AggregateRoomReservationInfo> output = new ArrayList<>();
         Map<Long, List<ReservationDomainObject>> reservationMap = findAll().stream()
