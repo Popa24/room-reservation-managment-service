@@ -33,14 +33,15 @@ public class LoginController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) { // Verify the password
-            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(),user.getRoles(), 999999999)); // 24 hours in milliseconds
+            String token = String.valueOf(createJWT(user.getId().toString(), user.getEmail(), user.getRoles(), 999999999)); // 24 hours in milliseconds
 
             return ResponseEntity.ok(new com.example.demo.user.dto.JsonLoginResponse(token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
-    public static String createJWT(String id, String subject,String role, long ttlMillis) {
+
+    public static String createJWT(String id, String subject, String role, long ttlMillis) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
@@ -77,7 +78,6 @@ public class LoginController {
 
         return jws.getBody();
     }
-
 
 
 }

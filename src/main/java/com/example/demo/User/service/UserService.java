@@ -4,9 +4,7 @@ import com.example.demo.user.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -16,6 +14,7 @@ public class UserService {
     public UserService(@NonNull final UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @NonNull
     public UserDomainObject save(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest) {
         if (isEmailInUse(createUserDomainObjectRequest.getEmail())) {
@@ -23,15 +22,12 @@ public class UserService {
         }
         return userRepository.save(createUserDomainObjectRequest);
     }
+
     @NonNull
     public boolean isEmailInUse(String email) {
+
         return findByEmail(email) != null;
     }
-
-    public String getPassword(Long userId) {
-        return userRepository.getPassword(userId);
-    }
-
 
     public UserInfoDto getUserInfo(Integer userId) {
 
@@ -42,8 +38,8 @@ public class UserService {
                 .email(userDomainObject.getEmail())
                 .build();
     }
-    @NonNull
-    public UserDomainObject getById(@NonNull final  Integer id){
+
+    public UserDomainObject getById(Integer id) {
         return userRepository.getById(id);
     }
 
@@ -55,6 +51,7 @@ public class UserService {
     public UserDomainObject findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
     public List<UserDomainObject> getAllUsers() {
         return userRepository.getAllUsers();
     }

@@ -34,12 +34,13 @@ public class RoomRepository {
         em.getTransaction().commit();
         return fromEntity(entity);
     }
+
     public Integer getPriceById(Long roomId) {
         RoomEntity roomEntity = entityManager.find(RoomEntity.class, roomId);
         return roomEntity != null ? roomEntity.getPrice() : null;
     }
 
-    public boolean existsByNameAndLocation(String name, String city,String street, int streetNo) {
+    public boolean existsByNameAndLocation(String name, String city, String street, int streetNo) {
         return false;
     }
 

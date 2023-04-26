@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class AdminAuthorizationFilter implements Filter {
 
-    private static final String SECRET_KEY = "ssdjfjfjfjrfffffssdjfjfjfjrfffffssdjfjfjff3422"; // The key used to sign the JWT
+    private static final String SECRET_KEY = "ssdjfjfjfjrfffffssdjfjfjfjrfffffssdjfjfjff3422";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -18,7 +18,7 @@ public class AdminAuthorizationFilter implements Filter {
 
         String jwt = httpRequest.getHeader("Authorization");
         if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring(7); // Remove the "Bearer " prefix
+            jwt = jwt.substring(7);
         }
 
         String userRole = null;

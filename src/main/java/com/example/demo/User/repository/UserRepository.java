@@ -22,7 +22,6 @@ public class UserRepository {
         this.entityManager = entityManager;
     }
 
-
     @NonNull
     public UserDomainObject save(@NonNull final CreateUserDomainObjectRequest createUserDomainObjectRequest) {
         final EntityManager em = entityManager
@@ -38,10 +37,6 @@ public class UserRepository {
         return fromEntity(entity);
     }
 
-    public String getPassword(Long userId) {
-        UserEntity userEntity = entityManager.find(UserEntity.class, userId);
-        return userEntity != null ? userEntity.getPassword() : null;
-    }
 
     public @NonNull UserDomainObject update(@NonNull UserDomainObject user) {
         final EntityManager em = entityManager
@@ -81,12 +76,14 @@ public class UserRepository {
                 .getTransaction()
                 .commit();
     }
+
     public UserDomainObject findByEmail(String email) {
         TypedQuery<UserEntity> query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.email = :email", UserEntity.class);
         query.setParameter("email", email);
         List<UserEntity> resultList = query.getResultList();
         return resultList.isEmpty() ? null : fromEntity(resultList.get(0));
     }
+
     public List<UserDomainObject> getAllUsers() {
         List<UserEntity> entities = entityManager.createQuery("SELECT u FROM UserEntity u", UserEntity.class).getResultList();
         return entities.stream().map(UserRepository::fromEntity).collect(Collectors.toList());
@@ -117,7 +114,6 @@ public class UserRepository {
 
         return entity;
     }
-
 
 
 }

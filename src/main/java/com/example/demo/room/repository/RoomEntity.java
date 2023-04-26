@@ -20,7 +20,7 @@ public class RoomEntity {
     @Column(name = "streetNo")
     private int streetNo;
     @Column(name = "capacity")
-    private  int capacity;
+    private int capacity;
     @Column(name = "price")
     private int price;
     @Column(name = "description")

@@ -3,6 +3,7 @@ package com.example.demo.room.controller;
 import com.example.demo.room.service.AllRoomInformationDto;
 import com.example.demo.room.service.CreateRoomDomainObjectRequest;
 import com.example.demo.room.service.RoomDomainObject;
+import com.example.demo.room.service.TopRented;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -22,6 +23,15 @@ public class RoomControllerHelper {
                 .build();
     }
 
+    public static JsonTopRentedResponse toJson(@NonNull final TopRented topRented) {
+        return JsonTopRentedResponse.builder()
+                .roomId(topRented.getRoomId())
+                .nrOfReservations(topRented.getNrOfReservations())
+                .totalAmountOfRentedTime(topRented.getTotalAmountOfRentedTime())
+                .generatedRevenue(topRented.getGeneratedRevenue())
+                .build();
+    }
+
     public @NonNull RoomDomainObject toRoomDomainObject(@NonNull final JsonUpsertRoomDomainRequest jsonUpsertRoomDomainRequest, Long id) {
         return RoomDomainObject.builder()
                 .id(id)
@@ -34,7 +44,8 @@ public class RoomControllerHelper {
                 .description(jsonUpsertRoomDomainRequest.getDescription())
                 .build();
     }
-    public static JsonAllRoomInformationDtoResponse toJson(@NonNull final AllRoomInformationDto allRoomInformationDto){
+
+    public static JsonAllRoomInformationDtoResponse toJson(@NonNull final AllRoomInformationDto allRoomInformationDto) {
         return JsonAllRoomInformationDtoResponse.builder()
                 .name(allRoomInformationDto.getName())
                 .generatedRevenue(allRoomInformationDto.getGeneratedRevenue())
@@ -42,6 +53,7 @@ public class RoomControllerHelper {
                 .reservationInfoList(allRoomInformationDto.getReservationInfoList())
                 .build();
     }
+
     @NonNull
     public static JsonRoomDomainResponse toJson(@NonNull final RoomDomainObject roomDomainObject) {
         return JsonRoomDomainResponse.builder()

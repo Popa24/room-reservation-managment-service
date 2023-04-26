@@ -6,9 +6,7 @@ import lombok.Value;
 
 @Value
 @Builder
-
 public class CreateUserDomainObjectRequest {
-
     @NonNull
     String name;
     @NonNull
@@ -17,5 +15,4 @@ public class CreateUserDomainObjectRequest {
     String email;
     @NonNull
     String password;
-
 }

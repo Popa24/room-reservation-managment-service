@@ -18,8 +18,7 @@ public class UserControllerHelper {
                 .build();
     }
 
-    public @NonNull UserDomainObject toUserDomainObject(@NonNull final JsonUpsertUserDomainRequest jsonUpsertUserDomainRequest, Long id)
-    {
+    public @NonNull UserDomainObject toUserDomainObject(@NonNull final JsonUpsertUserDomainRequest jsonUpsertUserDomainRequest, Long id) {
         return UserDomainObject.builder()
                 .id(id)
                 .name(jsonUpsertUserDomainRequest.getName())
@@ -29,6 +28,7 @@ public class UserControllerHelper {
                 .roles(jsonUpsertUserDomainRequest.getRoles())
                 .build();
     }
+
     @NonNull
     public static JsonUserDomainResponse toJson(@NonNull final UserDomainObject userDomainObject) {
         return JsonUserDomainResponse.builder()

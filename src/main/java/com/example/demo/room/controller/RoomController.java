@@ -1,9 +1,9 @@
 package com.example.demo.room.controller;
 
+import com.example.demo.roomreservation.roomreservationservice.RoomReservationService;
 import com.example.demo.room.service.AllRoomInformationDto;
 import com.example.demo.room.service.RoomDomainObject;
 import com.example.demo.room.service.RoomService;
-import com.example.demo.room.service.TopRented;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +15,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/room")
 public class RoomController {
-
-
     private final RoomService roomService;
+    private final RoomReservationService roomReservationService;
 
-    public RoomController(@NonNull final RoomService roomService) {
+    public RoomController(@NonNull final RoomService roomService, @NonNull final RoomReservationService roomReservationService) {
         this.roomService = roomService;
-
+        this.roomReservationService = roomReservationService;
     }
 
     @GetMapping
@@ -30,33 +29,37 @@ public class RoomController {
         List<JsonRoomDomainResponse> jsonResponse = roomDomainObjects.stream().map(RoomControllerHelper::toJson).collect(Collectors.toList());
         return ResponseEntity.ok().body(jsonResponse);
     }
+
     @GetMapping("/top-rented")
     public ResponseEntity<List<JsonTopRentedResponse>> getTopRentedRooms(@RequestParam(required = false) Integer top, @RequestParam(required = false) Integer minGeneratedRevenue) {
-        List<TopRented>room= roomService.getTopRentedRooms(top, minGeneratedRevenue);
-        List<JsonTopRentedResponse>jsonResponse=room.stream().map(JsonTopRentedResponse::toJson).toList();
+        List<JsonTopRentedResponse> jsonResponse = roomReservationService.getTopRentedRooms(top, minGeneratedRevenue)
+                .stream().map(RoomControllerHelper::toJson).toList();
         return ResponseEntity.ok().body(jsonResponse);
     }
 
     @GetMapping("/all-room-info/{roomId}")
     public ResponseEntity<JsonAllRoomInformationDtoResponse> getAllRoomInfo(@PathVariable Long roomId) {
-        AllRoomInformationDto allRoomInformationDto = roomService.buildAllRoomInformationDto(roomId);
+        AllRoomInformationDto allRoomInformationDto = roomReservationService.buildAllRoomInformationDto(roomId);
         JsonAllRoomInformationDtoResponse response = RoomControllerHelper.toJson(allRoomInformationDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @PostMapping("/create")
     public ResponseEntity<JsonRoomDomainResponse> newRoom(@RequestBody @NonNull final JsonUpsertRoomDomainRequest request) {
         final RoomDomainObject roomDomainObject = roomService.save(RoomControllerHelper.toCreateRoomRequest(request));
         return ResponseEntity.ok().body(RoomControllerHelper.toJson(roomDomainObject));
     }
+
     @PostMapping
     public ResponseEntity<JsonRoomDomainResponse> registerRoom(@RequestBody @NonNull final JsonUpsertRoomDomainRequest request) {
-        if (roomService.existsByNameAndLocation(request.getName(), request.getCity(),request.getStreet(),request.getStreetNo())) {
+        if (roomService.existsByNameAndLocation(request.getName(), request.getCity(), request.getStreet(), request.getStreetNo())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         } else {
             final RoomDomainObject roomDomainObject = roomService.save(RoomControllerHelper.toCreateRoomRequest(request));
             return ResponseEntity.ok().body(RoomControllerHelper.toJson(roomDomainObject));
         }
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<JsonRoomDomainResponse> updateRoom(@RequestBody @NonNull final JsonUpsertRoomDomainRequest request, @PathVariable Long id) {
         final RoomDomainObject roomDomainObject = roomService.update(RoomControllerHelper.toRoomDomainObject(request, id));

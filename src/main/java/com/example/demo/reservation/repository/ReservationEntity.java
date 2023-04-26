@@ -13,12 +13,12 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name="user_id")
+    @Column(name = "userId")
     private Long userId;
-    @Column (name = "room_id")
+    @Column(name = "roomId")
     private Long roomId;
-    @Column(name = "start_date")
+    @Column(name = "startDate")
     private Timestamp startDate;
-    @Column(name = "end_date")
+    @Column(name = "endDate")
     private Timestamp endDate;
 }

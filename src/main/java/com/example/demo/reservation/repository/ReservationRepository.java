@@ -8,7 +8,6 @@ import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,32 +33,6 @@ public class ReservationRepository {
         em.persist(entity);
         em.getTransaction().commit();
         return fromEntity(entity);
-    }
-    public Timestamp findFirstStartDateByRoomId(Long roomId) {
-        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId ORDER BY r.startDate ASC", ReservationEntity.class);
-        query.setParameter("roomId", roomId);
-        query.setMaxResults(1);
-        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
-        return result != null ? result.getStartDate() : null;
-    }
-    public Timestamp findLastEndDateByRoomId(Long roomId) {
-        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId ORDER BY r.endDate DESC", ReservationEntity.class);
-        query.setParameter("roomId", roomId);
-        query.setMaxResults(1);
-        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
-        return result != null ? result.getEndDate() : null;
-    }
-
-    public ReservationDomainObject findReservationByRoomId(Long roomId) {
-        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId", ReservationEntity.class);
-        query.setParameter("roomId", roomId);
-        ReservationEntity result = query.getResultStream().findFirst().orElse(null);
-        return result != null ? fromEntity(result) : null;
-    }
-    public List<Long> findReservationIdsByRoomId(Long roomId) {
-        TypedQuery<Long> query = entityManager.createQuery("SELECT r.id FROM ReservationEntity r WHERE r.roomId = :roomId", Long.class);
-        query.setParameter("roomId", roomId);
-        return query.getResultList();
     }
 
     public ReservationDomainObject findById(Long id) {
@@ -102,9 +75,17 @@ public class ReservationRepository {
             return null;
         }
     }
+
     public List<ReservationDomainObject> getReservationsByRoomId(Long roomId) {
         TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.roomId = :roomId", ReservationEntity.class);
         query.setParameter("roomId", roomId);
+        List<ReservationEntity> resultList = query.getResultList();
+        return resultList.stream().map(ReservationRepository::fromEntity).collect(Collectors.toList());
+    }
+
+    public List<ReservationDomainObject> getReservationsByUserId(Long userId) {
+        TypedQuery<ReservationEntity> query = entityManager.createQuery("SELECT r FROM ReservationEntity r WHERE r.userId = :userId", ReservationEntity.class);
+        query.setParameter("userId", userId);
         List<ReservationEntity> resultList = query.getResultList();
         return resultList.stream().map(ReservationRepository::fromEntity).collect(Collectors.toList());
     }
